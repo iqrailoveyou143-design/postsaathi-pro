@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostSaathi — Get Found Before You Post or Sell</title>
+<meta name="description" content="Free, open-source tool that generates SEO-ready titles, descriptions, tags and hashtags for social posts and product listings — across YouTube, Instagram, TikTok, OLX, Daraz, Shopify, Etsy, Amazon and more.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1310;
+    --bg2:#0D1815;
+    --card:#111E19;
+    --card2:#16241E;
+    --line:#22342B;
+    --text:#EAF2ED;
+    --muted:#83988E;
+    --accent:#F5A623;
+    --accent2:#FF6B5B;
+    --signal:#3DDC97;
+    --yt:#FF3B3B;
+    --ig1:#F58529;--ig2:#DD2A7B;--ig3:#8134AF;
+    --fb:#3B82F6;
+    --tt1:#00F2EA;--tt2:#FF0050;
+    --olx:#8C1AF6;
+    --daraz:#F85606;
+    --shopify:#95BF47;
+    --pinterest:#E60023;
+    --etsy:#F1641E;
+    --ebay:#0064D2;
+    --amazon:#FF9900;
+    --marketplace:#0064E0;
+    --good:#3DDC97;
+    --bad:#FF6B5B;
+  }
+  *{box-sizing:border-box;}
+  ::selection{background:var(--accent);color:#0A1310;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(245,166,35,0.10), transparent 55%),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(61,220,151,0.08), transparent 50%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:26px 18px;}
+
+  header{text-align:center;margin-bottom:24px;}
+  .brand{display:inline-flex;align-items:center;gap:10px;}
+  .signal-bars{display:flex;align-items:flex-end;gap:2px;height:20px;}
+  .signal-bars span{width:4px;background:var(--accent);border-radius:2px;display:block;animation:pulse 1.6s ease-in-out infinite;}
+  .signal-bars span:nth-child(1){height:6px;animation-delay:0s;}
+  .signal-bars span:nth-child(2){height:12px;animation-delay:.2s;}
+  .signal-bars span:nth-child(3){height:18px;animation-delay:.4s;}
+  .signal-bars span:nth-child(4){height:12px;animation-delay:.6s;}
+  @keyframes pulse{0%,100%{opacity:.35;}50%{opacity:1;}}
+  @media (prefers-reduced-motion: reduce){.signal-bars span{animation:none;opacity:.8;}}
+  .logo{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:26px;
+    color:var(--text);letter-spacing:-.01em;
+  }
+  .logo span{color:var(--accent);}
+  .tagline{color:var(--muted);font-size:13.5px;margin-top:8px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.5;}
+
+  .mode-row{display:flex;gap:10px;margin-bottom:14px;}
+  .mode-opt{
+    flex:1;text-align:center;padding:13px 8px;border-radius:12px;border:1px solid var(--line);
+    background:var(--card);cursor:pointer;font-size:13.5px;font-weight:600;color:var(--muted);
+    transition:.15s;font-family:'Space Grotesk',sans-serif;
+  }
+  .mode-opt.on{border-color:var(--accent);color:var(--accent);background:rgba(245,166,35,.08);}
+
+  .tabs{display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;margin-bottom:18px;}
+  .tab{
+    flex:1;text-align:center;padding:12px 8px;border-radius:10px;cursor:pointer;
+    font-weight:600;font-size:13.5px;color:var(--muted);transition:.2s;user-select:none;
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .tab.active{background:var(--accent);color:#1A1206;}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px;margin-bottom:16px;
+  }
+  .card h3{margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;}
+  textarea, input[type=text], input[type=url], input[type=number]{
+    width:100%;background:var(--card2);border:1px solid var(--line);
+    color:var(--text);padding:12px;border-radius:10px;font-size:14px;
+    font-family:'Inter',sans-serif;resize:vertical;
+  }
+  textarea{min-height:88px;}
+  input::placeholder, textarea::placeholder{color:#5C6E65;}
+  input:focus, textarea:focus{outline:2px solid var(--accent);outline-offset:1px;}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+  .platforms{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .chip-toggle{
+    display:flex;align-items:center;gap:6px;padding:8px 12px;border-radius:999px;
+    border:1px solid var(--line);cursor:pointer;font-size:12.5px;font-weight:600;
+    background:var(--card2);color:var(--muted);transition:.15s;
+  }
+  .chip-toggle.on{color:#fff;border-color:transparent;}
+  .chip-toggle.on[data-p="youtube"]{background:var(--yt);}
+  .chip-toggle.on[data-p="instagram"]{background:linear-gradient(90deg,var(--ig1),var(--ig2),var(--ig3));}
+  .chip-toggle.on[data-p="facebook"]{background:var(--fb);}
+  .chip-toggle.on[data-p="tiktok"]{background:linear-gradient(90deg,var(--tt1),var(--tt2));color:#03231f;}
+  .chip-toggle.on[data-p="x"]{background:#000;border:1px solid #555;}
+  .chip-toggle.on[data-p="olx"]{background:var(--olx);}
+  .chip-toggle.on[data-p="daraz"]{background:var(--daraz);}
+  .chip-toggle.on[data-p="marketplace"]{background:var(--marketplace);}
+  .chip-toggle.on[data-p="shopify"]{background:var(--shopify);color:#0d1b06;}
+  .chip-toggle.on[data-p="pinterest"]{background:var(--pinterest);}
+  .chip-toggle.on[data-p="etsy"]{background:var(--etsy);}
+  .chip-toggle.on[data-p="ebay"]{background:var(--ebay);}
+  .chip-toggle.on[data-p="amazon"]{background:var(--amazon);color:#241800;}
+
+  .cond-row{display:flex;gap:8px;margin-top:10px;}
+  .cond-opt{
+    flex:1;text-align:center;padding:9px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card2);cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);
+  }
+  .cond-opt.on{border-color:var(--signal);color:var(--signal);background:rgba(61,220,151,.08);}
+
+  .radio-row{display:flex;gap:10px;margin-top:10px;}
+  .radio-opt{
+    flex:1;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card2);cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);
+  }
+  .radio-opt.on{border-color:var(--accent);color:var(--accent);background:rgba(245,166,35,.08);}
+
+  button.primary{
+    width:100%;margin-top:14px;padding:14px;border:none;border-radius:12px;
+    background:var(--accent);color:#1A1206;
+    font-weight:700;font-size:14.5px;cursor:pointer;font-family:'Space Grotesk',sans-serif;
+    transition:.15s;
+  }
+  button.primary:hover:not(:disabled){background:#FFB94A;}
+  button.primary:disabled{opacity:.45;cursor:not-allowed;}
+  .cooldown-note{text-align:center;font-size:12px;color:var(--muted);margin-top:8px;}
+
+  .result-card{border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid var(--line);background:var(--card);animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .result-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .badge{font-size:11px;font-weight:700;padding:4px 10px;border-radius:999px;color:#fff;font-family:'Space Grotesk',sans-serif;}
+  .badge.youtube{background:var(--yt);}
+  .badge.instagram{background:linear-gradient(90deg,var(--ig1),var(--ig2),var(--ig3));}
+  .badge.facebook{background:var(--fb);}
+  .badge.tiktok{background:linear-gradient(90deg,var(--tt1),var(--tt2));color:#03231f;}
+  .badge.x{background:#000;border:1px solid #555;}
+  .badge.olx{background:var(--olx);}
+  .badge.daraz{background:var(--daraz);}
+  .badge.marketplace{background:var(--marketplace);}
+  .badge.shopify{background:var(--shopify);color:#0d1b06;}
+  .badge.pinterest{background:var(--pinterest);}
+  .badge.etsy{background:var(--etsy);}
+  .badge.ebay{background:var(--ebay);}
+  .badge.amazon{background:var(--amazon);color:#241800;}
+
+  .field-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:12px 0 6px;font-weight:600;}
+  .field-value{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.5;}
+  .copybtn{
+    float:right;background:none;border:1px solid var(--line);color:var(--muted);
+    font-size:11px;padding:3px 9px;border-radius:7px;cursor:pointer;margin-left:8px;
+  }
+  .copybtn:hover{border-color:var(--accent);color:var(--accent);}
+  .hashtags{display:flex;flex-wrap:wrap;gap:6px;}
+  .htag{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--card2);
+    border:1px solid var(--line);padding:5px 10px;border-radius:999px;color:var(--signal);
+  }
+  .score{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .score-badge{font-weight:700;font-family:'Space Grotesk',sans-serif;font-size:13px;padding:6px 14px;border-radius:999px;}
+  .score-badge.high{background:rgba(61,220,151,.15);color:var(--good);border:1px solid var(--good);}
+  .score-badge.low{background:rgba(255,107,91,.15);color:var(--bad);border:1px solid var(--bad);}
+  .score-badge.mid{background:rgba(245,166,35,.15);color:var(--accent);border:1px solid var(--accent);}
+
+  .loading{text-align:center;color:var(--muted);font-size:13px;padding:20px 0;}
+  .err{color:var(--bad);font-size:13px;background:rgba(255,107,91,.08);border:1px solid var(--bad);padding:10px 12px;border-radius:10px;margin-top:10px;}
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--card2);border:1px solid var(--line);color:var(--text);
+    padding:10px 18px;border-radius:999px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;
+  }
+  .toast.show{opacity:1;}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px;line-height:1.8;}
+  footer a{color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);}
+  footer a:hover{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="signal-bars"><span></span><span></span><span></span><span></span></div>
+      <div class="logo">Post<span>Saathi</span></div>
+    </div>
+    <div class="tagline">Get found before you post or sell — SEO-ready titles, descriptions, tags & hashtags for social content and product listings, worldwide.</div>
+  </header>
+
+  <div class="mode-row" id="modeRow">
+    <div class="mode-opt on" data-mode="social">📢 Social Media Post</div>
+    <div class="mode-opt" data-mode="selling">🛒 Sell a Product</div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="generate">✨ Create New</div>
+    <div class="tab" data-tab="analyze">🔍 Check Existing</div>
+  </div>
+
+  <!-- TAB 1: GENERATE -->
+  <div class="panel active" id="panel-generate">
+    <div class="card">
+      <div id="socialFields">
+        <h3>What is your content about?</h3>
+        <textarea id="genTopic" placeholder="Example: A video where I show how to cook biryani at home..."></textarea>
+        <div class="field-label" style="margin-top:0;">Choose platform(s)</div>
+        <div class="platforms" id="socialPlatforms">
+          <div class="chip-toggle" data-p="youtube">▶ YouTube</div>
+          <div class="chip-toggle" data-p="instagram">📷 Instagram</div>
+          <div class="chip-toggle" data-p="facebook">👍 Facebook</div>
+          <div class="chip-toggle" data-p="tiktok">🎵 TikTok</div>
+          <div class="chip-toggle" data-p="x">✕ X</div>
+        </div>
+      </div>
+
+      <div id="sellingFields" style="display:none;">
+        <h3>What are you selling?</h3>
+        <input type="text" id="sellName" placeholder="Product name — e.g. iPhone 13, Study Table, Honda CD 70">
+        <div class="row2" style="margin-top:10px;">
+          <input type="text" id="sellPrice" placeholder="Price — e.g. Rs. 45,000">
+          <div class="cond-row" style="margin-top:0;">
+            <div class="cond-opt on" data-cond="Used">Used</div>
+            <div class="cond-opt" data-cond="New">New</div>
+          </div>
+        </div>
+        <div class="field-label">Key details / features</div>
+        <textarea id="sellDetails" placeholder="Example: 128GB, condition 9/10, box included, one owner, minor scratch on back..."></textarea>
+        <div class="field-label">Choose marketplace(s)</div>
+        <div class="platforms" id="sellingPlatforms">
+          <div class="chip-toggle" data-p="olx">🟣 OLX</div>
+          <div class="chip-toggle" data-p="daraz">🛍️ Daraz</div>
+          <div class="chip-toggle" data-p="marketplace">🏬 FB Marketplace</div>
+          <div class="chip-toggle" data-p="shopify">🟢 Shopify</div>
+          <div class="chip-toggle" data-p="pinterest">📌 Pinterest</div>
+          <div class="chip-toggle" data-p="etsy">🧵 Etsy</div>
+          <div class="chip-toggle" data-p="ebay">🔵 eBay</div>
+          <div class="chip-toggle" data-p="amazon">📦 Amazon</div>
+        </div>
+      </div>
+
+      <button class="primary" id="genBtn">Generate SEO Content</button>
+      <div class="cooldown-note" id="genCooldown"></div>
+    </div>
+    <div id="genResults"></div>
+  </div>
+
+  <!-- TAB 2: ANALYZE -->
+  <div class="panel" id="panel-analyze">
+    <div class="card">
+      <h3>Which platform do you want to check?</h3>
+      <div class="radio-row">
+        <div class="radio-opt on" data-mode="youtube">▶ YouTube (auto link)</div>
+        <div class="radio-opt" data-mode="other">Any other platform</div>
+      </div>
+
+      <div id="ytFields">
+        <div class="field-label" style="margin-top:16px;">YouTube video link</div>
+        <input type="url" id="ytLink" placeholder="https://youtube.com/watch?v=...">
+      </div>
+
+      <div id="otherFields" style="display:none;">
+        <div class="field-label" style="margin-top:16px;">Platform</div>
+        <div class="platforms" id="otherPlatform">
+          <div class="chip-toggle" data-p="instagram">📷 Instagram</div>
+          <div class="chip-toggle" data-p="facebook">👍 Facebook</div>
+          <div class="chip-toggle" data-p="tiktok">🎵 TikTok</div>
+          <div class="chip-toggle" data-p="x">✕ X</div>
+          <div class="chip-toggle" data-p="olx">🟣 OLX</div>
+          <div class="chip-toggle" data-p="daraz">🛍️ Daraz</div>
+          <div class="chip-toggle" data-p="marketplace">🏬 Marketplace</div>
+          <div class="chip-toggle" data-p="etsy">🧵 Etsy</div>
+        </div>
+        <div class="field-label">Post/listing link (for reference)</div>
+        <input type="url" id="otherLink" placeholder="https://...">
+        <div class="field-label">Paste your current title/caption/description</div>
+        <textarea id="otherCaption" placeholder="Paste what you're currently using..."></textarea>
+      </div>
+
+      <button class="primary" id="analyzeBtn">Check It</button>
+      <div class="cooldown-note" id="analyzeCooldown"></div>
+    </div>
+    <div id="analyzeResults"></div>
+  </div>
+
+  <footer>
+    PostSaathi is free &amp; open-source 💚<br>
+    <a href="https://github.com/iqrailoveyou143-design/postsaathi-pro" target="_blank">View source on GitHub</a> &nbsp;·&nbsp;
+    <a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="mailto:iqrailoveyou143@gmail.com">Contact</a>
+  </footer>
+  <div class="toast" id="toast">Copied ✅</div>
+</div>
+
+<script>
+// Mode: social vs selling
+document.querySelectorAll('.mode-opt').forEach(m=>{
+  m.addEventListener('click', ()=>{
+    document.querySelectorAll('.mode-opt').forEach(x=>x.classList.remove('on'));
+    m.classList.add('on');
+    const isSelling = m.dataset.mode === 'selling';
+    document.getElementById('socialFields').style.display = isSelling ? 'none':'block';
+    document.getElementById('sellingFields').style.display = isSelling ? 'block':'none';
+  });
+});
+
+// Condition toggle (New/Used)
+document.querySelectorAll('.cond-opt').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    document.querySelectorAll('.cond-opt').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on');
+  });
+});
+
+// Tabs
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+}));
+
+// Platform chip toggles
+document.querySelectorAll('#socialPlatforms .chip-toggle, #sellingPlatforms .chip-toggle, #otherPlatform .chip-toggle').forEach(c=>{
+  c.addEventListener('click', ()=> c.classList.toggle('on'));
+});
+
+// Analyze mode radio
+document.querySelectorAll('.radio-opt').forEach(r=>{
+  r.addEventListener('click', ()=>{
+    document.querySelectorAll('.radio-opt').forEach(x=>x.classList.remove('on'));
+    r.classList.add('on');
+    const isYt = r.dataset.mode === 'youtube';
+    document.getElementById('ytFields').style.display = isYt ? 'block':'none';
+    document.getElementById('otherFields').style.display = isYt ? 'none':'block';
+  });
+});
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1500);
+}
+function copyText(txt){
+  navigator.clipboard.writeText(txt).then(()=>toast('Copied ✅')).catch(()=>toast('Copy failed'));
+}
+
+function startCooldown(btn, noteEl, seconds){
+  let remaining = seconds;
+  btn.disabled = true;
+  noteEl.textContent = `Next request available in ${remaining}s...`;
+  const interval = setInterval(()=>{
+    remaining--;
+    if(remaining <= 0){
+      clearInterval(interval);
+      btn.disabled = false;
+      noteEl.textContent = '';
+    } else {
+      noteEl.textContent = `Next request available in ${remaining}s...`;
+    }
+  }, 1000);
+}
+
+const platformLabels = {
+  youtube:'YouTube', instagram:'Instagram', facebook:'Facebook', tiktok:'TikTok', x:'X (Twitter)',
+  olx:'OLX', daraz:'Daraz', marketplace:'FB Marketplace', shopify:'Shopify',
+  pinterest:'Pinterest', etsy:'Etsy', ebay:'eBay', amazon:'Amazon'
+};
+
+// Talks directly to this site's own backend (/api/seo).
+// No API key ever lives in the browser — it stays safe on the server.
+async function callBackend(prompt){
+  const res = await fetch('/api/seo', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ prompt })
+  });
+  const raw = await res.text();
+  let parsed;
+  try{ parsed = JSON.parse(raw); }catch(e){ throw new Error('Got an unexpected response from the server.'); }
+  if(!res.ok){ throw new Error(parsed.error || 'Something went wrong.'); }
+  return parsed;
+}
+
+function renderVariantBlock(obj, index, total){
+  const hashtagsHtml = (obj.hashtags||[]).map(h=>`<span class="htag">#${h.replace(/^#/,'')}</span>`).join('');
+  const optionLabel = total > 1 ? `<div class="field-label" style="color:var(--signal);font-size:12px;margin-top:${index===0?'0':'20px'};">— Option ${index+1} —</div>` : '';
+  return `
+    ${optionLabel}
+    <div class="field-label">Title <button class="copybtn" onclick='copyText(${JSON.stringify(obj.title)})'>Copy</button></div>
+    <div class="field-value">${obj.title}</div>
+    <div class="field-label">Description <button class="copybtn" onclick='copyText(${JSON.stringify(obj.description)})'>Copy</button></div>
+    <div class="field-value">${obj.description}</div>
+    <div class="field-label">Tags/Keywords <button class="copybtn" onclick='copyText(${JSON.stringify((obj.tags||[]).join(", "))})'>Copy</button></div>
+    <div class="field-value">${(obj.tags||[]).join(', ')}</div>
+    <div class="field-label">Hashtags <button class="copybtn" onclick='copyText(${JSON.stringify((obj.hashtags||[]).map(h=>"#"+h.replace(/^#/,"")).join(" "))})'>Copy All</button></div>
+    <div class="hashtags">${hashtagsHtml}</div>`;
+}
+
+function renderGenCard(platform, platformObj){
+  const variants = platformObj.variants || [platformObj];
+  const blocks = variants.map((v,i)=>renderVariantBlock(v, i, variants.length)).join('');
+  return `
+  <div class="result-card">
+    <div class="result-head">
+      <span class="badge ${platform}">${platformLabels[platform]}</span>
+    </div>
+    ${blocks}
+  </div>`;
+}
+
+document.getElementById('genBtn').addEventListener('click', async ()=>{
+  const isSelling = document.querySelector('.mode-opt.on').dataset.mode === 'selling';
+  const out = document.getElementById('genResults');
+  const btn = document.getElementById('genBtn');
+  out.innerHTML = '';
+
+  let prompt, selected;
+
+  if(isSelling){
+    const name = document.getElementById('sellName').value.trim();
+    const price = document.getElementById('sellPrice').value.trim();
+    const condition = document.querySelector('.cond-opt.on').dataset.cond;
+    const details = document.getElementById('sellDetails').value.trim();
+    selected = [...document.querySelectorAll('#sellingPlatforms .chip-toggle.on')].map(c=>c.dataset.p);
+
+    if(!name){ out.innerHTML = '<div class="err">Please enter the product name.</div>'; return; }
+    if(selected.length===0){ out.innerHTML = '<div class="err">Please choose at least one marketplace.</div>'; return; }
+
+    prompt = `You are an e-commerce/marketplace SEO expert. A seller wants to list this item:
+Product: "${name}"
+Condition: ${condition}
+Price: ${price || 'not specified'}
+Details: ${details || 'none provided'}
+
+For each marketplace, give 3 DIFFERENT SEO-optimized listing options (variants) — title, description, tags, and relevant hashtags/keywords — so the seller can pick the one they like. Marketplaces: ${selected.join(', ')}.
+Match each marketplace's natural listing style (OLX/Daraz/Marketplace = local buyer trust language, mention condition and urgency; Shopify/Etsy = brand storytelling style; Pinterest = descriptive + keyword-rich for search + hashtags; eBay/Amazon = structured, feature-first, buyer-confidence language). Build in trust signals (condition, honesty) where relevant. Include the price naturally where it fits the platform's style.
+Return ONLY JSON in this exact shape, no extra text:
+{"results": {"${selected[0]}": {"variants": [{"title": "...", "description": "...", "tags": ["...","..."], "hashtags": ["...","..."]}, {...option 2...}, {...option 3...}]}, ...and the rest of the marketplaces in the same shape}}
+Write everything in clear English. Give 6-10 tags/hashtags per option (fewer for marketplaces that don't use hashtags, like OLX/Daraz/eBay/Amazon — just leave that array shorter or empty there).`;
+  } else {
+    const topic = document.getElementById('genTopic').value.trim();
+    selected = [...document.querySelectorAll('#socialPlatforms .chip-toggle.on')].map(c=>c.dataset.p);
+    if(!topic){ out.innerHTML = '<div class="err">Please describe your content first.</div>'; return; }
+    if(selected.length===0){ out.innerHTML = '<div class="err">Please choose at least one platform.</div>'; return; }
+
+    prompt = `You are a social media SEO expert. Content topic: "${topic}".
+For each platform, give 3 DIFFERENT SEO-optimized options (variants) — title, description, tags, and trending hashtags — so the user can pick the one they like. Platforms: ${selected.join(', ')}.
+The 3 options should have a different style/angle each (e.g. one direct/informative, one curiosity/hook-driven, one emotional/catchy). Match each platform's natural style (YouTube = searchable keyword-rich title; Instagram = catchy + emoji; TikTok = trendy hook; Facebook = engaging; X = short and punchy).
+Return ONLY JSON in this exact shape, no extra text:
+{"results": {"${selected[0]}": {"variants": [{"title": "...", "description": "...", "tags": ["...","..."], "hashtags": ["...","..."]}, {...option 2...}, {...option 3...}]}, ...and the rest of the platforms in the same shape}}
+Write everything in clear English. Give 8-12 hashtags per option.`;
+  }
+
+  btn.disabled = true;
+  out.innerHTML = '<div class="loading">Generating...</div>';
+  try{
+    const data = await callBackend(prompt);
+    out.innerHTML = '';
+    for(const p of selected){
+      if(data.results && data.results[p]){
+        out.innerHTML += renderGenCard(p, data.results[p]);
+      }
+    }
+  }catch(e){
+    out.innerHTML = `<div class="err">Something went wrong: ${e.message}</div>`;
+  }finally{
+    startCooldown(btn, document.getElementById('genCooldown'), 25);
+  }
+});
+
+async function getYoutubeOembed(url){
+  const res = await fetch(`https://www.youtube.com/oembed?url=${encodeURIComponent(url)}&format=json`);
+  if(!res.ok) throw new Error('This YouTube link is invalid or the video is private.');
+  return res.json();
+}
+
+function scoreClass(s){
+  s = (s||'').toLowerCase();
+  if(s.includes('high')||s.includes('good')) return 'high';
+  if(s.includes('low')||s.includes('poor')||s.includes('bad')) return 'low';
+  return 'mid';
+}
+
+document.getElementById('analyzeBtn').addEventListener('click', async ()=>{
+  const mode = document.querySelector('#panel-analyze .radio-opt.on').dataset.mode;
+  const out = document.getElementById('analyzeResults');
+  const btn = document.getElementById('analyzeBtn');
+  out.innerHTML = '';
+
+  btn.disabled = true;
+  out.innerHTML = '<div class="loading">Checking...</div>';
+
+  try{
+    let currentTitle = '', currentDesc = '', platform = '', link = '';
+
+    if(mode === 'youtube'){
+      link = document.getElementById('ytLink').value.trim();
+      if(!link){ throw new Error('Please enter a YouTube link.'); }
+      platform = 'youtube';
+      const meta = await getYoutubeOembed(link);
+      currentTitle = meta.title;
+      currentDesc = `(Video by ${meta.author_name})`;
+    } else {
+      const selP = document.querySelector('#otherPlatform .chip-toggle.on');
+      if(!selP){ throw new Error('Please choose a platform.'); }
+      platform = selP.dataset.p;
+      link = document.getElementById('otherLink').value.trim();
+      currentDesc = document.getElementById('otherCaption').value.trim();
+      currentTitle = currentDesc.slice(0,60);
+      if(!currentDesc){ throw new Error('Please paste your current caption/title.'); }
+    }
+
+    const prompt = `You are a social media & e-commerce SEO expert. This is a ${platformLabels[platform]} post/listing.
+Current title: "${currentTitle}"
+Current description/caption: "${currentDesc}"
+${link ? 'Link: '+link : ''}
+
+Analyze this content and rate it for SEO (High, Medium, or Low), give 2-3 short reasons why,
+then suggest a better/improved title, description, tags, and hashtags.
+Return ONLY JSON in this exact shape, no extra text:
+{"score":"High/Medium/Low","reasons":["...","..."],"improved":{"title":"...","description":"...","tags":["..."],"hashtags":["..."]}}`;
+
+    const data = await callBackend(prompt);
+    out.innerHTML = `
+    <div class="result-card">
+      <div class="result-head">
+        <span class="badge ${platform}">${platformLabels[platform]}</span>
+      </div>
+      <div class="score">
+        <span class="score-badge ${scoreClass(data.score)}">${data.score} SEO</span>
+      </div>
+      <div class="field-label">What's holding it back</div>
+      <div class="field-value">${(data.reasons||[]).map(r=>'• '+r).join('<br>')}</div>
+      ${renderGenCard(platform, data.improved).replace('<div class="result-card">','').replace(/<\/div>\s*$/,'')}
+    </div>`;
+  }catch(e){
+    out.innerHTML = `<div class="err">${e.message}</div>`;
+  }finally{
+    startCooldown(btn, document.getElementById('analyzeCooldown'), 25);
+  }
+});
+</script>
+</body>
+</html>
