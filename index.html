@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PostSaathi Pro — Get Your Listing Found</title>
+<meta name="description" content="Free, open-source SEO tool for sellers. Generate SEO-ready titles, descriptions and tags for your product listings — OLX, Daraz, Facebook Marketplace, Shopify, Pinterest, Etsy, eBay, Amazon.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A1310;
+    --card:#111E19;
+    --card2:#16241E;
+    --line:#22342B;
+    --text:#EAF2ED;
+    --muted:#83988E;
+    --accent:#F5A623;
+    --signal:#3DDC97;
+    --olx:#8C1AF6;
+    --daraz:#F85606;
+    --shopify:#95BF47;
+    --pinterest:#E60023;
+    --etsy:#F1641E;
+    --ebay:#0064D2;
+    --amazon:#FF9900;
+    --marketplace:#0064E0;
+    --good:#3DDC97;
+    --bad:#FF6B5B;
+  }
+  *{box-sizing:border-box;}
+  ::selection{background:var(--accent);color:#0A1310;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(ellipse 900px 500px at 20% -10%, rgba(245,166,35,0.10), transparent 55%),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(61,220,151,0.08), transparent 50%),
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    min-height:100vh;
+    padding-bottom:60px;
+  }
+  .wrap{max-width:720px;margin:0 auto;padding:26px 18px;}
+
+  header{text-align:center;margin-bottom:26px;}
+  .eyebrow{
+    display:inline-block;font-family:'Space Grotesk',sans-serif;font-size:11px;font-weight:600;
+    letter-spacing:.12em;text-transform:uppercase;color:var(--signal);
+    background:rgba(61,220,151,.08);border:1px solid rgba(61,220,151,.25);
+    padding:5px 14px;border-radius:999px;margin-bottom:16px;
+  }
+  .logo-mark{
+    width:56px;height:56px;border-radius:16px;margin:0 auto;
+    background:linear-gradient(135deg,var(--accent),var(--signal));
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;color:#0A1310;
+    letter-spacing:-.02em;
+  }
+  .tagline{color:var(--muted);font-size:13.5px;margin-top:14px;max-width:420px;margin-left:auto;margin-right:auto;line-height:1.5;}
+
+  .tabs{display:flex;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:6px;margin-bottom:18px;}
+  .tab{
+    flex:1;text-align:center;padding:12px 8px;border-radius:10px;cursor:pointer;
+    font-weight:600;font-size:13.5px;color:var(--muted);transition:.2s;user-select:none;
+    font-family:'Space Grotesk',sans-serif;
+  }
+  .tab.active{background:var(--accent);color:#1A1206;}
+
+  .panel{display:none;}
+  .panel.active{display:block;}
+
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:16px;
+    padding:18px;margin-bottom:16px;
+  }
+  .card h3{margin:0 0 12px;font-family:'Space Grotesk',sans-serif;font-size:15px;font-weight:600;}
+  textarea, input[type=text], input[type=url]{
+    width:100%;background:var(--card2);border:1px solid var(--line);
+    color:var(--text);padding:12px;border-radius:10px;font-size:14px;
+    font-family:'Inter',sans-serif;resize:vertical;
+  }
+  textarea{min-height:88px;}
+  input::placeholder, textarea::placeholder{color:#5C6E65;}
+  input:focus, textarea:focus{outline:2px solid var(--accent);outline-offset:1px;}
+
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+
+  .cond-row{display:flex;gap:8px;}
+  .cond-opt{
+    flex:1;text-align:center;padding:9px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card2);cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);
+  }
+  .cond-opt.on{border-color:var(--signal);color:var(--signal);background:rgba(61,220,151,.08);}
+
+  .field-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:14px 0 8px;font-weight:600;}
+
+  .photo-row{display:flex;gap:10px;}
+  .photo-btn{
+    flex:1;text-align:center;padding:12px 8px;border-radius:12px;border:1.5px dashed var(--line);
+    background:var(--card2);cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);
+    transition:.15s;display:block;
+  }
+  .photo-btn:hover{border-color:var(--accent);color:var(--accent);}
+  #photoPreviewWrap{margin-top:10px;position:relative;display:inline-block;}
+  .photo-preview{max-width:140px;max-height:140px;border-radius:12px;border:1px solid var(--line);display:block;}
+  .photo-remove{
+    margin-top:6px;background:none;border:1px solid var(--line);color:var(--muted);
+    font-size:11px;padding:4px 10px;border-radius:7px;cursor:pointer;display:block;
+  }
+  .photo-remove:hover{border-color:var(--bad);color:var(--bad);}
+
+  .platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .platform-card{
+    display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;
+    border:1.5px solid var(--line);cursor:pointer;background:var(--card2);transition:.15s;
+  }
+  .platform-card.on{border-color:var(--accent);background:rgba(245,166,35,.06);}
+  .mono{
+    width:30px;height:30px;border-radius:9px;flex-shrink:0;color:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:13px;
+  }
+  .platform-name{font-size:13px;font-weight:600;color:var(--text);}
+  .mono.olx{background:var(--olx);}
+  .mono.daraz{background:var(--daraz);}
+  .mono.marketplace{background:var(--marketplace);}
+  .mono.shopify{background:var(--shopify);color:#0d1b06;}
+  .mono.pinterest{background:var(--pinterest);}
+  .mono.etsy{background:var(--etsy);}
+  .mono.ebay{background:var(--ebay);}
+  .mono.amazon{background:var(--amazon);color:#241800;}
+
+  .radio-row{display:flex;gap:10px;margin-top:10px;}
+  .radio-opt{
+    flex:1;text-align:center;padding:10px;border-radius:10px;border:1px solid var(--line);
+    background:var(--card2);cursor:pointer;font-size:13px;font-weight:600;color:var(--muted);
+  }
+  .radio-opt.on{border-color:var(--accent);color:var(--accent);background:rgba(245,166,35,.08);}
+
+  button.primary{
+    width:100%;margin-top:16px;padding:14px;border:none;border-radius:12px;
+    background:var(--accent);color:#1A1206;
+    font-weight:700;font-size:14.5px;cursor:pointer;font-family:'Space Grotesk',sans-serif;
+    transition:.15s;
+  }
+  button.primary:hover:not(:disabled){background:#FFB94A;}
+  button.primary:disabled{opacity:.45;cursor:not-allowed;}
+  .cooldown-note{text-align:center;font-size:12px;color:var(--muted);margin-top:8px;}
+
+  .result-card{border-radius:16px;padding:16px;margin-bottom:14px;border:1px solid var(--line);background:var(--card);animation:fadein .35s ease;}
+  @keyframes fadein{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+  .result-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;}
+  .badge{display:inline-flex;align-items:center;gap:7px;font-size:12px;font-weight:700;padding:5px 12px 5px 6px;border-radius:999px;color:#fff;font-family:'Space Grotesk',sans-serif;}
+  .badge .mono{width:20px;height:20px;font-size:10px;border-radius:6px;}
+  .badge.olx{background:var(--olx);}
+  .badge.daraz{background:var(--daraz);}
+  .badge.marketplace{background:var(--marketplace);}
+  .badge.shopify{background:var(--shopify);color:#0d1b06;}
+  .badge.pinterest{background:var(--pinterest);}
+  .badge.etsy{background:var(--etsy);}
+  .badge.ebay{background:var(--ebay);}
+  .badge.amazon{background:var(--amazon);color:#241800;}
+
+  .field-value-label{font-size:10.5px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:12px 0 6px;font-weight:600;}
+  .field-value{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:14px;line-height:1.5;}
+  .copybtn{
+    float:right;background:none;border:1px solid var(--line);color:var(--muted);
+    font-size:11px;padding:3px 9px;border-radius:7px;cursor:pointer;margin-left:8px;
+  }
+  .copybtn:hover{border-color:var(--accent);color:var(--accent);}
+  .hashtags{display:flex;flex-wrap:wrap;gap:6px;}
+  .htag{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;background:var(--card2);
+    border:1px solid var(--line);padding:5px 10px;border-radius:999px;color:var(--signal);
+  }
+  .score{display:flex;align-items:center;gap:10px;margin-bottom:10px;}
+  .score-badge{font-weight:700;font-family:'Space Grotesk',sans-serif;font-size:13px;padding:6px 14px;border-radius:999px;}
+  .score-badge.high{background:rgba(61,220,151,.15);color:var(--good);border:1px solid var(--good);}
+  .score-badge.low{background:rgba(255,107,91,.15);color:var(--bad);border:1px solid var(--bad);}
+  .score-badge.mid{background:rgba(245,166,35,.15);color:var(--accent);border:1px solid var(--accent);}
+
+  .loading{text-align:center;color:var(--muted);font-size:13px;padding:20px 0;}
+  .err{color:var(--bad);font-size:13px;background:rgba(255,107,91,.08);border:1px solid var(--bad);padding:10px 12px;border-radius:10px;margin-top:10px;}
+  .toast{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:var(--card2);border:1px solid var(--line);color:var(--text);
+    padding:10px 18px;border-radius:999px;font-size:13px;opacity:0;transition:.25s;pointer-events:none;
+  }
+  .toast.show{opacity:1;}
+  footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px;line-height:1.8;}
+  footer a{color:var(--muted);text-decoration:underline;text-decoration-color:var(--line);}
+  footer a:hover{color:var(--accent);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Seller SEO Tool</div>
+    <div class="logo-mark">PS</div>
+    <div class="tagline">Get your listing found — SEO-ready titles, descriptions &amp; tags for sellers, across Pakistan's local marketplaces and international platforms.</div>
+  </header>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="generate">✨ Create New Listing</div>
+    <div class="tab" data-tab="analyze">🔍 Check Existing Listing</div>
+    <div class="tab" data-tab="keywords">🔑 Keyword Ideas</div>
+  </div>
+
+  <!-- TAB 1: GENERATE -->
+  <div class="panel active" id="panel-generate">
+    <div class="card">
+      <h3>What are you selling?</h3>
+      <input type="text" id="sellName" placeholder="Product name — e.g. iPhone 13, Study Table, Honda CD 70">
+      <div class="row2">
+        <input type="text" id="sellPrice" placeholder="Price — e.g. Rs. 45,000">
+        <div class="cond-row">
+          <div class="cond-opt on" data-cond="Used">Used</div>
+          <div class="cond-opt" data-cond="New">New</div>
+        </div>
+      </div>
+      <div class="field-label">Key details / features</div>
+      <textarea id="sellDetails" placeholder="Example: 128GB, condition 9/10, box included, one owner, minor scratch on back..."></textarea>
+
+      <div class="field-label">Or add a photo (optional — AI will look at it too)</div>
+      <div class="photo-row">
+        <label class="photo-btn" for="photoCapture">📷 Take Photo
+          <input type="file" id="photoCapture" accept="image/*" capture="environment" hidden>
+        </label>
+        <label class="photo-btn" for="photoUpload">🖼️ Upload Image
+          <input type="file" id="photoUpload" accept="image/*" hidden>
+        </label>
+      </div>
+      <div id="photoPreviewWrap" style="display:none;">
+        <img id="photoPreview" class="photo-preview" alt="Selected product photo">
+        <button class="photo-remove" id="photoRemove" type="button">✕ Remove photo</button>
+      </div>
+
+      <div class="field-label">Choose marketplace(s)</div>
+      <div class="platform-grid" id="sellingPlatforms">
+        <div class="platform-card" data-p="olx"><div class="mono olx">OL</div><div class="platform-name">OLX</div></div>
+        <div class="platform-card" data-p="daraz"><div class="mono daraz">Dz</div><div class="platform-name">Daraz</div></div>
+        <div class="platform-card" data-p="marketplace"><div class="mono marketplace">FB</div><div class="platform-name">FB Marketplace</div></div>
+        <div class="platform-card" data-p="shopify"><div class="mono shopify">Sh</div><div class="platform-name">Shopify</div></div>
+        <div class="platform-card" data-p="pinterest"><div class="mono pinterest">Pn</div><div class="platform-name">Pinterest</div></div>
+        <div class="platform-card" data-p="etsy"><div class="mono etsy">Et</div><div class="platform-name">Etsy</div></div>
+        <div class="platform-card" data-p="ebay"><div class="mono ebay">eB</div><div class="platform-name">eBay</div></div>
+        <div class="platform-card" data-p="amazon"><div class="mono amazon">Az</div><div class="platform-name">Amazon</div></div>
+      </div>
+
+      <button class="primary" id="genBtn">Generate SEO Listing</button>
+      <div class="cooldown-note" id="genCooldown"></div>
+    </div>
+    <div id="genResults"></div>
+  </div>
+
+  <!-- TAB 2: ANALYZE -->
+  <div class="panel" id="panel-analyze">
+    <div class="card">
+      <h3>Which marketplace is this listing on?</h3>
+      <div class="platform-grid" id="otherPlatform">
+        <div class="platform-card" data-p="olx"><div class="mono olx">OL</div><div class="platform-name">OLX</div></div>
+        <div class="platform-card" data-p="daraz"><div class="mono daraz">Dz</div><div class="platform-name">Daraz</div></div>
+        <div class="platform-card" data-p="marketplace"><div class="mono marketplace">FB</div><div class="platform-name">FB Marketplace</div></div>
+        <div class="platform-card" data-p="shopify"><div class="mono shopify">Sh</div><div class="platform-name">Shopify</div></div>
+        <div class="platform-card" data-p="pinterest"><div class="mono pinterest">Pn</div><div class="platform-name">Pinterest</div></div>
+        <div class="platform-card" data-p="etsy"><div class="mono etsy">Et</div><div class="platform-name">Etsy</div></div>
+        <div class="platform-card" data-p="ebay"><div class="mono ebay">eB</div><div class="platform-name">eBay</div></div>
+        <div class="platform-card" data-p="amazon"><div class="mono amazon">Az</div><div class="platform-name">Amazon</div></div>
+      </div>
+      <div class="field-label">Listing link (for reference)</div>
+      <input type="url" id="otherLink" placeholder="https://...">
+      <div class="field-label">Paste your current title/description</div>
+      <textarea id="otherCaption" placeholder="Paste what you're currently using..."></textarea>
+
+      <button class="primary" id="analyzeBtn">Check It</button>
+      <div class="cooldown-note" id="analyzeCooldown"></div>
+    </div>
+    <div id="analyzeResults"></div>
+  </div>
+
+  <!-- TAB 3: KEYWORD IDEAS -->
+  <div class="panel" id="panel-keywords">
+    <div class="card">
+      <h3>What's your seed keyword or product niche?</h3>
+      <input type="text" id="keywordSeed" placeholder="Example: leather bag, phone case, handmade candles">
+      <div class="field-label">Choose marketplace(s)</div>
+      <div class="platform-grid" id="keywordPlatforms">
+        <div class="platform-card" data-p="olx"><div class="mono olx">OL</div><div class="platform-name">OLX</div></div>
+        <div class="platform-card" data-p="daraz"><div class="mono daraz">Dz</div><div class="platform-name">Daraz</div></div>
+        <div class="platform-card" data-p="marketplace"><div class="mono marketplace">FB</div><div class="platform-name">FB Marketplace</div></div>
+        <div class="platform-card" data-p="shopify"><div class="mono shopify">Sh</div><div class="platform-name">Shopify</div></div>
+        <div class="platform-card" data-p="pinterest"><div class="mono pinterest">Pn</div><div class="platform-name">Pinterest</div></div>
+        <div class="platform-card" data-p="etsy"><div class="mono etsy">Et</div><div class="platform-name">Etsy</div></div>
+        <div class="platform-card" data-p="ebay"><div class="mono ebay">eB</div><div class="platform-name">eBay</div></div>
+        <div class="platform-card" data-p="amazon"><div class="mono amazon">Az</div><div class="platform-name">Amazon</div></div>
+      </div>
+      <div class="cooldown-note" style="margin-top:12px;">💡 These are AI-suggested keyword ideas, not real search-volume data — free tools can't access marketplaces' actual search stats. Use them to brainstorm, not as guaranteed traffic numbers.</div>
+      <button class="primary" id="keywordBtn">Get Keyword Ideas</button>
+      <div class="cooldown-note" id="keywordCooldown"></div>
+    </div>
+    <div id="keywordResults"></div>
+  </div>
+
+  <footer>
+    PostSaathi Pro is free &amp; open-source 💚<br>
+    <a href="https://github.com/iqrailoveyou143-design/postsaathi-pro" target="_blank">View source on GitHub</a> &nbsp;·&nbsp;
+    <a href="/privacy.html">Privacy Policy</a> &nbsp;·&nbsp;
+    <a href="mailto:iqrailoveyou143@gmail.com">Contact</a>
+  </footer>
+  <div class="toast" id="toast">Copied ✅</div>
+</div>
+
+<script>
+// Condition toggle (New/Used)
+document.querySelectorAll('.cond-opt').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    document.querySelectorAll('.cond-opt').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on');
+  });
+});
+
+// Tabs
+document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+}));
+
+// Platform card toggles (multi-select in generate tab, single-select in analyze tab)
+document.querySelectorAll('#sellingPlatforms .platform-card').forEach(c=>{
+  c.addEventListener('click', ()=> c.classList.toggle('on'));
+});
+document.querySelectorAll('#keywordPlatforms .platform-card').forEach(c=>{
+  c.addEventListener('click', ()=> c.classList.toggle('on'));
+});
+document.querySelectorAll('#otherPlatform .platform-card').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    document.querySelectorAll('#otherPlatform .platform-card').forEach(x=>x.classList.remove('on'));
+    c.classList.add('on');
+  });
+});
+
+// Photo capture / upload handling
+let selectedImageBase64 = null;
+function handlePhotoFile(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    selectedImageBase64 = e.target.result; // data:image/...;base64,....
+    document.getElementById('photoPreview').src = selectedImageBase64;
+    document.getElementById('photoPreviewWrap').style.display = 'inline-block';
+  };
+  reader.readAsDataURL(file);
+}
+document.getElementById('photoCapture').addEventListener('change', e=> handlePhotoFile(e.target.files[0]));
+document.getElementById('photoUpload').addEventListener('change', e=> handlePhotoFile(e.target.files[0]));
+document.getElementById('photoRemove').addEventListener('click', ()=>{
+  selectedImageBase64 = null;
+  document.getElementById('photoPreviewWrap').style.display = 'none';
+  document.getElementById('photoCapture').value = '';
+  document.getElementById('photoUpload').value = '';
+});
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 1500);
+}
+function copyText(txt){
+  navigator.clipboard.writeText(txt).then(()=>toast('Copied ✅')).catch(()=>toast('Copy failed'));
+}
+
+function startCooldown(btn, noteEl, seconds){
+  let remaining = seconds;
+  btn.disabled = true;
+  noteEl.textContent = `Next request available in ${remaining}s...`;
+  const interval = setInterval(()=>{
+    remaining--;
+    if(remaining <= 0){
+      clearInterval(interval);
+      btn.disabled = false;
+      noteEl.textContent = '';
+    } else {
+      noteEl.textContent = `Next request available in ${remaining}s...`;
+    }
+  }, 1000);
+}
+
+const platformLabels = {
+  olx:'OLX', daraz:'Daraz', marketplace:'FB Marketplace', shopify:'Shopify',
+  pinterest:'Pinterest', etsy:'Etsy', ebay:'eBay', amazon:'Amazon'
+};
+const platformMono = {
+  olx:'OL', daraz:'Dz', marketplace:'FB', shopify:'Sh',
+  pinterest:'Pn', etsy:'Et', ebay:'eB', amazon:'Az'
+};
+
+// Talks directly to this site's own backend (/api/seo).
+// No API key ever lives in the browser — it stays safe on the server.
+async function callBackend(prompt, image){
+  const res = await fetch('/api/seo', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({ prompt, image: image || undefined })
+  });
+  const raw = await res.text();
+  let parsed;
+  try{ parsed = JSON.parse(raw); }catch(e){ throw new Error('Got an unexpected response from the server.'); }
+  if(!res.ok){ throw new Error(parsed.error || 'Something went wrong.'); }
+  return parsed;
+}
+
+function renderVariantBlock(obj, index, total){
+  const hashtagsHtml = (obj.hashtags||[]).map(h=>`<span class="htag">#${h.replace(/^#/,'')}</span>`).join('');
+  const optionLabel = total > 1 ? `<div class="field-value-label" style="color:var(--signal);font-size:12px;margin-top:${index===0?'0':'20px'};">— Option ${index+1} —</div>` : '';
+  return `
+    ${optionLabel}
+    <div class="field-value-label">Title <button class="copybtn" onclick='copyText(${JSON.stringify(obj.title)})'>Copy</button></div>
+    <div class="field-value">${obj.title}</div>
+    <div class="field-value-label">Description <button class="copybtn" onclick='copyText(${JSON.stringify(obj.description)})'>Copy</button></div>
+    <div class="field-value">${obj.description}</div>
+    <div class="field-value-label">Tags/Keywords <button class="copybtn" onclick='copyText(${JSON.stringify((obj.tags||[]).join(", "))})'>Copy</button></div>
+    <div class="field-value">${(obj.tags||[]).join(', ')}</div>
+    ${(obj.hashtags||[]).length ? `
+    <div class="field-value-label">Hashtags <button class="copybtn" onclick='copyText(${JSON.stringify((obj.hashtags||[]).map(h=>"#"+h.replace(/^#/,"")).join(" "))})'>Copy All</button></div>
+    <div class="hashtags">${hashtagsHtml}</div>` : ''}`;
+}
+
+function renderGenCard(platform, platformObj){
+  const variants = platformObj.variants || [platformObj];
+  const blocks = variants.map((v,i)=>renderVariantBlock(v, i, variants.length)).join('');
+  return `
+  <div class="result-card">
+    <div class="result-head">
+      <span class="badge ${platform}"><span class="mono ${platform}">${platformMono[platform]}</span>${platformLabels[platform]}</span>
+    </div>
+    ${blocks}
+  </div>`;
+}
+
+document.getElementById('genBtn').addEventListener('click', async ()=>{
+  const out = document.getElementById('genResults');
+  const btn = document.getElementById('genBtn');
+  out.innerHTML = '';
+
+  const name = document.getElementById('sellName').value.trim();
+  const price = document.getElementById('sellPrice').value.trim();
+  const condition = document.querySelector('.cond-opt.on').dataset.cond;
+  const details = document.getElementById('sellDetails').value.trim();
+  const selected = [...document.querySelectorAll('#sellingPlatforms .platform-card.on')].map(c=>c.dataset.p);
+
+  if(!name && !selectedImageBase64){ out.innerHTML = '<div class="err">Please enter the product name or add a photo.</div>'; return; }
+  if(selected.length===0){ out.innerHTML = '<div class="err">Please choose at least one marketplace.</div>'; return; }
+
+  const photoNote = selectedImageBase64 ? 'A photo of the product is attached — look at it carefully and use what you see (type of item, color, material, condition, brand if visible) to inform the listing, combined with the details below.' : '';
+  const prompt = `You are an e-commerce/marketplace SEO expert. A seller wants to list this item:
+${photoNote}
+Product: "${name || '(see photo)'}"
+Condition: ${condition}
+Price: ${price || 'not specified'}
+Details: ${details || 'none provided'}
+
+For each marketplace, give 3 DIFFERENT SEO-optimized listing options (variants) — title, description, tags, and relevant hashtags/keywords — so the seller can pick the one they like. Marketplaces: ${selected.join(', ')}.
+Match each marketplace's natural listing style (OLX/Daraz/Marketplace = local buyer trust language, mention condition and urgency; Shopify/Etsy = brand storytelling style; Pinterest = descriptive + keyword-rich for search + hashtags; eBay/Amazon = structured, feature-first, buyer-confidence language). Build in trust signals (condition, honesty) where relevant. Include the price naturally where it fits the platform's style.
+Return ONLY JSON in this exact shape, no extra text:
+{"results": {"${selected[0]}": {"variants": [{"title": "...", "description": "...", "tags": ["...","..."], "hashtags": ["...","..."]}, {...option 2...}, {...option 3...}]}, ...and the rest of the marketplaces in the same shape}}
+Write everything in clear English. Give 6-10 tags/hashtags per option for Pinterest/Shopify/Etsy. For OLX/Daraz/Marketplace/eBay/Amazon, leave the hashtags array empty (these platforms don't use hashtags) but still give 6-10 search tags/keywords.`;
+
+  btn.disabled = true;
+  out.innerHTML = '<div class="loading">Generating...</div>';
+  try{
+    const data = await callBackend(prompt, selectedImageBase64);
+    out.innerHTML = '';
+    for(const p of selected){
+      if(data.results && data.results[p]){
+        out.innerHTML += renderGenCard(p, data.results[p]);
+      }
+    }
+  }catch(e){
+    out.innerHTML = `<div class="err">Something went wrong: ${e.message}</div>`;
+  }finally{
+    startCooldown(btn, document.getElementById('genCooldown'), 25);
+  }
+});
+
+function renderKeywordCard(platform, keywords){
+  const chips = (keywords||[]).map(k=>`<span class="htag">${k}</span>`).join('');
+  return `
+  <div class="result-card">
+    <div class="result-head">
+      <span class="badge ${platform}"><span class="mono ${platform}">${platformMono[platform]}</span>${platformLabels[platform]}</span>
+    </div>
+    <div class="field-value-label">Suggested keywords <button class="copybtn" onclick='copyText(${JSON.stringify((keywords||[]).join(", "))})'>Copy All</button></div>
+    <div class="hashtags">${chips}</div>
+  </div>`;
+}
+
+document.getElementById('keywordBtn').addEventListener('click', async ()=>{
+  const out = document.getElementById('keywordResults');
+  const btn = document.getElementById('keywordBtn');
+  out.innerHTML = '';
+
+  const seed = document.getElementById('keywordSeed').value.trim();
+  const selected = [...document.querySelectorAll('#keywordPlatforms .platform-card.on')].map(c=>c.dataset.p);
+
+  if(!seed){ out.innerHTML = '<div class="err">Please enter a seed keyword or niche.</div>'; return; }
+  if(selected.length===0){ out.innerHTML = '<div class="err">Please choose at least one marketplace.</div>'; return; }
+
+  const prompt = `You are an e-commerce SEO keyword research expert. Seed keyword/niche: "${seed}".
+For each marketplace, suggest 15-20 relevant keyword ideas a real buyer might search for — mix of broad terms and specific long-tail phrases. Marketplaces: ${selected.join(', ')}.
+Tune the style to each marketplace (Etsy/Pinterest = descriptive, style/material/occasion-based long-tail phrases; Amazon/eBay = feature and brand-style search terms; OLX/Daraz/Marketplace = simple local buyer search phrases).
+Return ONLY JSON in this exact shape, no extra text:
+{"results": {"${selected[0]}": ["keyword one", "keyword two", "..."], ...and the rest of the marketplaces in the same shape}}`;
+
+  btn.disabled = true;
+  out.innerHTML = '<div class="loading">Generating keyword ideas...</div>';
+  try{
+    const data = await callBackend(prompt);
+    out.innerHTML = '';
+    for(const p of selected){
+      if(data.results && data.results[p]){
+        out.innerHTML += renderKeywordCard(p, data.results[p]);
+      }
+    }
+  }catch(e){
+    out.innerHTML = `<div class="err">Something went wrong: ${e.message}</div>`;
+  }finally{
+    startCooldown(btn, document.getElementById('keywordCooldown'), 25);
+  }
+});
+
+function scoreClass(s){
+  s = (s||'').toLowerCase();
+  if(s.includes('high')||s.includes('good')) return 'high';
+  if(s.includes('low')||s.includes('poor')||s.includes('bad')) return 'low';
+  return 'mid';
+}
+
+document.getElementById('analyzeBtn').addEventListener('click', async ()=>{
+  const out = document.getElementById('analyzeResults');
+  const btn = document.getElementById('analyzeBtn');
+  out.innerHTML = '';
+
+  const selP = document.querySelector('#otherPlatform .platform-card.on');
+  const link = document.getElementById('otherLink').value.trim();
+  const currentDesc = document.getElementById('otherCaption').value.trim();
+
+  if(!selP){ out.innerHTML = '<div class="err">Please choose a marketplace.</div>'; return; }
+  if(!currentDesc){ out.innerHTML = '<div class="err">Please paste your current title/description.</div>'; return; }
+
+  const platform = selP.dataset.p;
+  const currentTitle = currentDesc.slice(0,60);
+
+  btn.disabled = true;
+  out.innerHTML = '<div class="loading">Checking...</div>';
+
+  try{
+    const prompt = `You are an e-commerce/marketplace SEO expert. This is a ${platformLabels[platform]} listing.
+Current title: "${currentTitle}"
+Current description: "${currentDesc}"
+${link ? 'Link: '+link : ''}
+
+Analyze this listing and rate it for SEO (High, Medium, or Low), give 2-3 short reasons why,
+then suggest a better/improved title, description, and tags/keywords.
+Return ONLY JSON in this exact shape, no extra text:
+{"score":"High/Medium/Low","reasons":["...","..."],"improved":{"title":"...","description":"...","tags":["..."],"hashtags":[]}}`;
+
+    const data = await callBackend(prompt);
+    out.innerHTML = `
+    <div class="result-card">
+      <div class="result-head">
+        <span class="badge ${platform}"><span class="mono ${platform}">${platformMono[platform]}</span>${platformLabels[platform]}</span>
+      </div>
+      <div class="score">
+        <span class="score-badge ${scoreClass(data.score)}">${data.score} SEO</span>
+      </div>
+      <div class="field-value-label">What's holding it back</div>
+      <div class="field-value">${(data.reasons||[]).map(r=>'• '+r).join('<br>')}</div>
+      ${renderGenCard(platform, data.improved).replace('<div class="result-card">','').replace(/<\/div>\s*$/,'')}
+    </div>`;
+  }catch(e){
+    out.innerHTML = `<div class="err">${e.message}</div>`;
+  }finally{
+    startCooldown(btn, document.getElementById('analyzeCooldown'), 25);
+  }
+});
+</script>
+</body>
+</html>
